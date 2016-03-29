@@ -1,0 +1,89 @@
+{% extends "template.html" %}
+
+{% block head %}
+  <title>TelepathyBot</title>
+  <style>
+    .btn-round {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+    .btn-round.btn-xs {
+      width: 24px;
+      height: 24px;
+    }
+    .thumbed {
+      min-height: 60px;
+    }
+  </style>
+{% endblock %}
+
+{% block nav %}
+  <li role="presentation" class="active"><a href="#">Home</a></li>
+  <li role="presentation"><a href="/about">About</a></li>
+{% endblock %}
+{% block jumbotron %}
+  <h1>Telepathy</h1>
+  <p class="lead">Here you can search any kind of topic and discover how people is <b>feeling</b> about it.</p>
+  <br>
+  <div class="row">
+    <div class = "col-sm-4 col-sm-offset-4">
+      <form action="/search" method="POST" class="navbar-form navbar-left" role="form">
+        <div class="input-group">
+          <input type="text" name="userinput" id="userinput" class="form-control" placeholder="Search for..."/>
+          <span class="input-group-btn">
+            <button type="submit" value="Submit" class="btn btn-success">Go!</button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row"><br></div>
+  {% if query_mood != "" %}
+    <div class="row">
+      <ul class="list-group">
+          <li class="list-group-item thumbed">
+            {% if query_mood == "pos" %}
+            <button type="button" class="badge btn btn-success btn-round">
+              <span class="glyphicon glyphicon-thumbs-up"></span>
+            </button>
+            <h4>People is feeling <b><font color="green">good</font></b> about <b>"{{ keywords }}"</b>:</h4>
+            {% elif query_mood == "neg" %}
+            <button type="button" class="badge btn btn-danger btn-round">
+              <span class="glyphicon glyphicon-thumbs-down"></span>
+            </button>
+            <h4>People is feeling <b><font color="red">bad</font></b> about <b>"{{ keywords }}"</b>:</h4>
+            {% elif query_mood == "neu" %}
+            <button type="button" class="badge btn btn-round">
+              <span class="glyphicon glyphicon-thumbs-up"></span>
+            </button>
+            <h4>People is feeling <b><font color="grey">neutral</font></b> about <b>"{{ keywords }}"</b>:</h4>
+            {% endif %}
+          </li>
+      </ul>
+    </div>
+  {% endif %}
+  <div class="row">
+    <ul class="list-group">
+      {% for entry in entries %}
+        <li class="list-group-item thumbed">
+          <button type="button"
+            {% if mood[loop.index0] == "neg" %} class="badge btn btn-danger btn-round"
+            {% else %} class="badge btn btn-round"
+            {% endif %} >
+            <span class="glyphicon glyphicon-thumbs-down"/>
+          </button>
+          <button type="button"
+            {% if mood[loop.index0] == "pos" %}
+              class="badge btn btn-success btn-round"
+            {% else %}
+              class="badge btn btn-round"
+            {% endif %} >
+            <span class="glyphicon glyphicon-thumbs-up"/>
+          </button>
+          {{entry}}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

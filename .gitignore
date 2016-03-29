@@ -1,0 +1,5 @@
+#Untracked files and directories
+/venv
+/app/*.pyc
+/app/config.py
+/app/app.wsgi
