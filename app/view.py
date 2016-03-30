@@ -4,7 +4,7 @@ from flask import Flask, session, render_template, request, redirect
 
 from twitter_module import Twitter
 from sentiment import best_bigram_word_feats, get_classifier, classify
-import config
+from config import SECRET_KEY
 
 app = Flask(__name__)
 
@@ -59,7 +59,7 @@ def about():
 
 if __name__ == "__main__":
     # Set secret key in order to use session
-    app.config["SECRET_KEY"] = config.SECRET_KEY
+    app.config["SECRET_KEY"] = SECRET_KEY
 
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get("PORT", 5000))

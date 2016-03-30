@@ -1,6 +1,6 @@
 from flask import Flask
 
-import config
+from config import ACCESS_TOKEN, ACCESS_SECRET, CONSUMER_KEY, CONSUMER_SECRET
 
 app = Flask(__name__)
 
@@ -13,11 +13,7 @@ class Twitter:
     def create():
         # Locally import in order to avoid conflicts on the class name
         from twitter import Twitter, OAuth
-        # Set tokens/keys from Twitter
-        ACCESS_TOKEN = config.ACCESS_TOKEN
-        ACCESS_SECRET = config.ACCESS_SECRET
-        CONSUMER_KEY = config.CONSUMER_KEY
-        CONSUMER_SECRET = config.CONSUMER_SECRET
+        # Set tokens/keys from Twitter App
         oauth = OAuth(
                 ACCESS_TOKEN, ACCESS_SECRET, CONSUMER_KEY, CONSUMER_SECRET)
         # Initiate the connection to Twitter API

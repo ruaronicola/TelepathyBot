@@ -5,7 +5,7 @@ from telegram.ext import Updater
 
 from twitter_module import Twitter
 from sentiment import best_bigram_word_feats, get_classifier, classify
-import config
+from config import BOT_TOKEN
 
 
 # Enable logging
@@ -95,7 +95,7 @@ def main():
     # Updater obj -- create telegram Bot: get new notifications from telegram
     # and forward them to the Dispatcher
     # To generate an ACCESS TOKEN: we have to talk to BotFather
-    updater = Updater(token=config.BOT_TOKEN)
+    updater = Updater(token=BOT_TOKEN)
     dispatcher = updater.dispatcher
 
     # Add handlers
