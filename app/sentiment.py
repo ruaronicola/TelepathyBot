@@ -6,6 +6,20 @@ from nltk.corpus import stopwords, twitter_samples
 from nltk.collocations import BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist, ConditionalFreqDist
+from pymongo import MongoClient
+
+
+from config import MONGOLAB_PASS, MONGOLAB_PORT, MONGOLAB_URI, MONGOLAB_USER
+
+
+# Connect to mongolab, where tweets are stored and classified
+def connect():
+    connection = MongoClient(MONGOLAB_URI, MONGOLAB_PORT)
+    handle = connection["pymongo-db"]
+    handle.authenticate(MONGOLAB_USER, MONGOLAB_PASS)
+    return handle
+
+handle = connect()
 
 
 # Processing ----------
@@ -35,8 +49,8 @@ def get_best_words():
     word_fd = FreqDist()
     label_word_fd = ConditionalFreqDist()
 
-    negstr = twitter_samples.strings("negative_tweets.json")
-    posstr = twitter_samples.strings("positive_tweets.json")
+    negstr = [obj["text"] for obj in handle.negative_tweets.find()]
+    posstr = [obj["text"] for obj in handle.positive_tweets.find()]
     negwords = []
     poswords = []
     for i in range(0, len(negstr)-1):
@@ -102,8 +116,8 @@ def best_bigram_word_feats(words, score_fn=BigramAssocMeasures.chi_sq, n=200):
 def get_classifier(featx):
     tokenizer = TweetTokenizer()
     print "Training Classifier..."
-    negstr = twitter_samples.strings("negative_tweets.json")
-    posstr = twitter_samples.strings("positive_tweets.json")
+    negstr = [obj["text"] for obj in handle.negative_tweets.find()]
+    posstr = [obj["text"] for obj in handle.positive_tweets.find()]
     negfeats = [(featx(tokenizer.tokenize(process_tweet(negstr[i]))), 'neg')
                 for i in range(0, len(negstr)-1)]
     posfeats = [(featx(tokenizer.tokenize(process_tweet(posstr[i]))), 'pos')
