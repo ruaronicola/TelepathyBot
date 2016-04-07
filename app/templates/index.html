@@ -1,9 +1,35 @@
 {% extends "template.html" %}
 
 {% block scripts %}
+  <script type=text/javascript>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
   <script type="text/javascript">
+      function switch_and_submit(obj, initial, final){
+          // Switch the buttons
+          final=="neg"?color="danger":color="success"
+          obj.className += " btn-"+color
+          obj.setAttribute("onclick", '')
+          opposite = document.getElementById(obj.id.replace(final, initial))
+          opposite.className = "badge btn btn-round"
+          opposite.setAttribute("onclick", 'clicked(this)')
+
+          // Here I should code Ajax
+
+          $.ajax({
+            type: "GET",
+            url: $SCRIPT_ROOT + "/mongo_insert",
+            contentType: "application/json; charset=utf-8",
+            data: { text: obj.value, mood: final }
+        });
+      }
       function clicked(obj){
-        alert(obj.id+" | "+obj.value)
+        if (obj.id.search("neg")!=-1){
+          switch_and_submit(obj, "pos", "neg")
+        }
+        if (obj.id.search("pos")!=-1){
+          switch_and_submit(obj, "neg", "pos")
+        }
       }
   </script>
 {% endblock %}

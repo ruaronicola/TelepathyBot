@@ -1,16 +1,42 @@
 import os
 
-from flask import Flask, session, render_template, request, redirect
+from flask import Flask, session, render_template, request, redirect, jsonify
+from pymongo import MongoClient
 
 from twitter_module import Twitter
-from sentiment import best_bigram_word_feats, get_classifier, classify
-from config import SECRET_KEY
+import sentiment
 
 app = Flask(__name__)
+app.config.from_pyfile("config.py")
+# Define _featx and _classifier global variables
+_featx = None
+_classifier = None
 
-# Set _featx and _classifier global variables
-_featx = best_bigram_word_feats
-_classifier = get_classifier(_featx)
+
+def connect():
+    connection = MongoClient(
+                     app.config["MONGOLAB_URI"],
+                     app.config["MONGOLAB_PORT"])
+    handle = connection["pymongo-db"]
+    handle.authenticate(
+                app.config["MONGOLAB_USER"],
+                app.config["MONGOLAB_PASS"])
+    return handle
+
+
+# Function to work with mongodb
+@app.route('/mongo_insert', methods=['GET'])
+def mongo_insert():
+    text = request.args.get('text')
+    mood = request.args.get('mood')
+    handle = connect()
+    if mood == "pos":
+        handle.negative_tweets.remove({"text": text})
+        handle.positive_tweets.insert({"text": text, "source": "user"})
+    elif mood == "neg":
+        handle.positive_tweets.remove({"text": text})
+        handle.negative_tweets.insert({"text": text, "source": "user"})
+    return jsonify(success=True)
 
 
 # In index() we read the name of the current request stored in session,
@@ -26,7 +52,7 @@ def index():
     if (request is not None):
         for tweet in Twitter.query(request, 40)["statuses"]:
             tweets.append(tweet["text"])
-        mood = classify(_classifier, _featx, tweets)
+        mood = sentiment.classify(_classifier, _featx, tweets)
         # Then evaluate the "global mood"
         if mood.count("pos") > mood.count("neg"):
             query_mood = "pos"
@@ -58,8 +84,10 @@ def about():
 
 
 if __name__ == "__main__":
-    # Set secret key in order to use session
-    app.config["SECRET_KEY"] = SECRET_KEY
+    # Set _featx and _classifier global variables
+    sentiment.__init__bestwords()
+    _featx = sentiment.best_bigram_word_feats
+    _classifier = sentiment.get_classifier(_featx)
 
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get("PORT", 5000))

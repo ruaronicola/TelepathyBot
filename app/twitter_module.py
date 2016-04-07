@@ -1,8 +1,4 @@
-from flask import Flask
-
 from config import ACCESS_TOKEN, ACCESS_SECRET, CONSUMER_KEY, CONSUMER_SECRET
-
-app = Flask(__name__)
 
 
 # Manage Python Twitter tools

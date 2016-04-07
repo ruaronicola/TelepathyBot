@@ -2,21 +2,34 @@ import re
 
 from nltk.classify import NaiveBayesClassifier
 from nltk.tokenize import TweetTokenizer
-from nltk.corpus import stopwords, twitter_samples
+from nltk.corpus import stopwords
 from nltk.collocations import BigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist, ConditionalFreqDist
 from pymongo import MongoClient
 
+from view import app
 
-from config import MONGOLAB_PASS, MONGOLAB_PORT, MONGOLAB_URI, MONGOLAB_USER
+# Define global variable _bestwords, used during feature extraction
+_bestwords = None
+
+
+# Set global variable _bestwords, used during feature extraction
+def __init__bestwords():
+    print "Defining _bestwords.."
+    global _bestwords
+    _bestwords = get_best_words()
 
 
 # Connect to mongolab, where tweets are stored and classified
 def connect():
-    connection = MongoClient(MONGOLAB_URI, MONGOLAB_PORT)
+    connection = MongoClient(
+                     app.config["MONGOLAB_URI"],
+                     app.config["MONGOLAB_PORT"])
     handle = connection["pymongo-db"]
-    handle.authenticate(MONGOLAB_USER, MONGOLAB_PASS)
+    handle.authenticate(
+                app.config["MONGOLAB_USER"],
+                app.config["MONGOLAB_PASS"])
     return handle
 
 handle = connect()
@@ -89,10 +102,6 @@ def get_best_words():
     bestwords = set([w for w, s in best])
 
     return bestwords
-
-# Define global variable _bestwords, used during feature extraction
-print "Defining _bestwords.."
-_bestwords = get_best_words()
 
 
 # Feature Extractors ----------
