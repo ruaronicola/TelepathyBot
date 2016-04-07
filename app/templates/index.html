@@ -1,5 +1,13 @@
 {% extends "template.html" %}
 
+{% block scripts %}
+  <script type="text/javascript">
+      function clicked(obj){
+        alert(obj.id+" | "+obj.value)
+      }
+  </script>
+{% endblock %}
+
 {% block head %}
   <title>TelepathyBot</title>
   <style>
@@ -16,12 +24,15 @@
       min-height: 60px;
     }
   </style>
+
+
 {% endblock %}
 
 {% block nav %}
   <li role="presentation" class="active"><a href="#">Home</a></li>
   <li role="presentation"><a href="/about">About</a></li>
 {% endblock %}
+
 {% block jumbotron %}
   <h1>Telepathy</h1>
   <p class="lead">Here you can search any kind of topic and discover how people is <b>feeling</b> about it.</p>
@@ -68,16 +79,24 @@
       {% for entry in entries %}
         <li class="list-group-item thumbed">
           <button type="button"
-            {% if mood[loop.index0] == "neg" %} class="badge btn btn-danger btn-round"
-            {% else %} class="badge btn btn-round"
+            id = "{{"neg"+loop.index0|string}}"
+            value = "{{entry}}"
+            {% if mood[loop.index0] == "neg" %}
+              class="badge btn btn-danger btn-round"
+            {% else %}
+              class="badge btn btn-round"
+              onclick='clicked(this)'
             {% endif %} >
             <span class="glyphicon glyphicon-thumbs-down"/>
           </button>
           <button type="button"
+            id = "{{"pos"+loop.index0|string}}"
+            value = "{{entry}}"
             {% if mood[loop.index0] == "pos" %}
               class="badge btn btn-success btn-round"
             {% else %}
               class="badge btn btn-round"
+              onclick='clicked(this)'
             {% endif %} >
             <span class="glyphicon glyphicon-thumbs-up"/>
           </button>
