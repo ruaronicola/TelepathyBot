@@ -8,6 +8,7 @@ import sentiment
 
 app = Flask(__name__)
 app.config.from_pyfile("config.py")
+
 # Define _featx and _classifier global variables
 _featx = None
 _classifier = None
