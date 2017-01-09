@@ -10,4 +10,4 @@ Its aim is just to analyse tweets regarding a *user specified* topic in order to
 #### How does it work?
 The base-idea is really simple:
 
-<a href="url"><img src="app/static/flow.png" align="center" ></a>
+<a href="url"><img src="contents/static/flow.png" align="center" ></a>
