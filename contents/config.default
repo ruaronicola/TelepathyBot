@@ -1,0 +1,14 @@
+### MongoDB configuration ###
+MONGOLAB_PASS = ""
+MONGOLAB_PORT = ""
+MONGOLAB_URI = ""
+MONGOLAB_USER = ""
+
+### Twitter configuration ###
+ACCESS_TOKEN = ""
+ACCESS_SECRET = ""
+CONSUMER_KEY = ""
+CONSUMER_SECRET = ""
+
+### Telegram configuration ###
+BOT_TOKEN = ""
