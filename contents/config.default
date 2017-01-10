@@ -1,6 +1,6 @@
 ### MongoDB configuration ###
 MONGOLAB_PASS = ""
-MONGOLAB_PORT = ""
+MONGOLAB_PORT = 
 MONGOLAB_URI = ""
 MONGOLAB_USER = ""
 

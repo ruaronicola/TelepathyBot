@@ -8,14 +8,14 @@ from nltk.metrics import BigramAssocMeasures
 from nltk.probability import FreqDist, ConditionalFreqDist
 from pymongo import MongoClient
 
-from bot import config
+from config import MONGOLAB_URI, MONGOLAB_PORT, MONGOLAB_USER, MONGOLAB_PASS
 
 # Define global variable _bestwords, used during feature extraction
 _bestwords = None
 
 
 # Set global variable _bestwords, used during feature extraction
-def __init__bestwords():
+def set_bestwords():
     print "Defining _bestwords.."
     global _bestwords
     _bestwords = get_best_words()
@@ -23,13 +23,9 @@ def __init__bestwords():
 
 # Connect to mongolab, where tweets are stored and classified
 def connect():
-    connection = MongoClient(
-                     bot.config["MONGOLAB_URI"],
-                     bot.config["MONGOLAB_PORT"])
+    connection = MongoClient(MONGOLAB_URI, MONGOLAB_PORT)
     handle = connection["pymongo-db"]
-    handle.authenticate(
-                bot.config["MONGOLAB_USER"],
-                bot.config["MONGOLAB_PASS"])
+    handle.authenticate(MONGOLAB_USER, MONGOLAB_PASS)
     return handle
 
 handle = connect()
