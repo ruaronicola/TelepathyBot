@@ -1,10 +1,12 @@
 import logging
 
 from telegram import ChatAction, Emoji
-from telegram.ext import Updater
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
+from telegram.error import (TelegramError, Unauthorized, BadRequest, 
+                            TimedOut, ChatMigrated, NetworkError)
 
 from twitter_module import Twitter
-from sentiment import best_bigram_word_feats, get_classifier, classify
+from sentiment import best_bigram_word_feats, get_classifier, classify, set_bestwords
 from config import BOT_TOKEN
 
 
@@ -14,6 +16,9 @@ logging.basicConfig(
         level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+# Initialize bestwords variable
+set_bestwords()
 
 # Set _featx and _classifier global variables
 _featx = best_bigram_word_feats
@@ -82,8 +87,21 @@ def unknown(bot, update):
 
 
 # Handle errors
-def error(bot, update, error):
-    logger.warn("Update '%s' caused error '%s'" % (update, error))
+def error_callback(bot, update, error):
+    try:
+        raise error
+    except Unauthorized:
+        logger.warn("Update '%s' caused Unauthorized error" % (update))
+    except BadRequest:
+        logger.warn("Update '%s' caused BadRequest error" % (update))
+    except TimedOut:
+        logger.warn("Update '%s' caused TimedOut error" % (update))
+    except NetworkError:
+        logger.warn("Update '%s' caused NetworkError error" % (update))
+    except ChatMigrated as e:
+        logger.warn("Update '%s' caused ChatMigrated error" % (update))
+    except TelegramError:
+        logger.warn("Update '%s' caused TelegramError error" % (update))
 
 
 # Handle received messages
@@ -98,13 +116,20 @@ def main():
     updater = Updater(token=BOT_TOKEN)
     dispatcher = updater.dispatcher
 
+    # Create handlers
+    start_handler = CommandHandler('start', start)
+    mood_handler = CommandHandler('mood', mood, pass_args=True)
+    help_handler = CommandHandler('help', help)
+    unknown_handler = MessageHandler(Filters.command, unknown)
+    message_handler = MessageHandler(Filters.text, message)
+
     # Add handlers
-    dispatcher.addTelegramCommandHandler("start", start)
-    dispatcher.addTelegramCommandHandler("mood", mood)
-    dispatcher.addTelegramCommandHandler("help", help)
-    dispatcher.addUnknownTelegramCommandHandler(unknown)
-    dispatcher.addErrorHandler(error)
-    dispatcher.addTelegramMessageHandler(message)
+    dispatcher.add_handler(start_handler)
+    dispatcher.add_handler(mood_handler)
+    dispatcher.add_handler(help_handler)
+    dispatcher.add_handler(unknown_handler)
+    dispatcher.add_error_handler(error_callback)
+    dispatcher.add_handler(message_handler)
 
     # Start the Bot
     updater.start_polling()
