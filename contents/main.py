@@ -4,9 +4,9 @@ from telegram import ChatAction, Emoji
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest, 
                             TimedOut, ChatMigrated, NetworkError)
-
 from twitter_module import Twitter
-from sentiment import best_bigram_word_feats, get_classifier, classify, set_bestwords
+from sentiment import best_bigram_word_feats, get_classifier, classify, init_bestwords
+
 from config import BOT_TOKEN
 
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 # Initialize bestwords variable
-set_bestwords()
+init_bestwords()
 
 # Set _featx and _classifier global variables
 _featx = best_bigram_word_feats
@@ -34,7 +34,17 @@ def start(bot, update):
 
 # Process /help update
 def help(bot, update):
-    help_message = """I can help you analysing recent tweets regarding any kind of topic.\nIt's not complicated, there's basically one command:\nyou can type /mood followed by the tags you want to search for and I will provide a real-time analysis.  Something like..\n/mood #football\n/mood #summer and so on..\nTry me out!\nFor more informations you can visit https://github.com/ruaronicola/TelepathyBot."""
+    help_message = """
+                    I can help you analysing recent tweets regarding any kind of topic.
+                    It's not complicated, there's basically one command:
+                    you can type /mood followed by the tags you want to search for and I will 
+                    provide a real-time analysis.  Something like..
+                    /mood #football
+                    /mood #summer and so on..
+
+                    Try me out!
+                    For more informations you can visit https://github.com/ruaronicola/TelepathyBot.
+                   """
     logger.info("/help request from %s" % update.message.chat_id)
     bot.sendMessage(update.message.chat_id, text=help_message)
 
