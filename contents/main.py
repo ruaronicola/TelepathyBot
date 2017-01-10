@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 import logging
 
-from telegram import ChatAction, Emoji
+from telegram import ChatAction
 from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
 from telegram.error import (TelegramError, Unauthorized, BadRequest, 
                             TimedOut, ChatMigrated, NetworkError)
@@ -76,13 +77,13 @@ def mood(bot, update, args):
     # Then evaluate the "global mood"
     if mood.count("pos") > mood.count("neg"):
         query_mood = "positive"
-        EMOJI = Emoji.SMILING_FACE_WITH_OPEN_MOUTH.decode("utf-8")
+        EMOJI = "😃".decode("utf-8")
     elif mood.count("pos") < mood.count("neg"):
         query_mood = "negative"
-        EMOJI = Emoji.PENSIVE_FACE.decode("utf-8")
+        EMOJI = "😔".decode("utf-8")
     else:
         query_mood = "neutral"
-        EMOJI = Emoji.RELIEVED_FACE.decode("utf-8")
+        EMOJI = "😌".decode("utf-8")
     bot.sendMessage(
             chat_id=update.message.chat_id,
             text="%s  People is now feeling %s about %s" %
