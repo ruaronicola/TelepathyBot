@@ -18,12 +18,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# Initialize bestwords variable
-init_bestwords()
-
-# Set _featx and _classifier global variables
-_featx = best_bigram_word_feats
-_classifier = get_classifier(_featx)
+# Define _featx and _classifier global variables
+_featx = None
+_classifier = None
 
 
 # Process /start update
@@ -151,4 +148,10 @@ def main():
 
 # Main
 if __name__ == "__main__":
+    # Initialize bestwords variable
+    init_bestwords()
+
+    # Set _featx and _classifier global variables
+    _featx = best_bigram_word_feats
+    _classifier = get_classifier(_featx)
     main()
