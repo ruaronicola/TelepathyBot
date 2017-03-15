@@ -16,9 +16,9 @@ cp default.config config.py
 pico config.py
 # setup your configuration file
 python
->>> import nktl
+>>> import nltk
 >>> nltk.download()
-# download and install stopword corpus
+# download and install 'stopwords' corpus
 >>> exit()
 python main.py
 ```
