@@ -1,4 +1,4 @@
-certifi==2016.9.26
+certifi==2022.12.7
 future==0.16.0
 mongo==0.2.0
 nltk==3.2.2
